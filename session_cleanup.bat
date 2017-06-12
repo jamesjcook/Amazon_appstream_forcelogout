@@ -67,7 +67,6 @@ if %dirCount% EQU 0 (
 )
 
 :END
-if exist %USERPROFILE%\is_sched.txt ( del %USERPROFILE%\is_sched.txt ) 
 start /min /belownormal sleep_ping 5 & exit /B 
 
 ENDLOCAL
