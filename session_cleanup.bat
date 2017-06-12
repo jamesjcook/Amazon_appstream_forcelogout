@@ -61,9 +61,9 @@ if %dirCount% EQU 0 (
     @REM trigger logout here
     echo Logging Off
     schtasks /F /delete /tn session_cleanup_check > NUL 2>&1
-    @REM shutdown -l
+    shutdown -l
 ) else (
-    echo NoClean dircount%dirCount%
+    echo SessionProgramsStillActive 
 )
 
 :END
