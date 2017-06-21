@@ -44,17 +44,19 @@ if NOT %program%==NOPROGRAM (
     @REM :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     @REM WARNING: THIS IS WHERE WE SCHEUDLE HARD SESSION LIMIT OF 120 MINUTES
     @REM :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    FOR /F "usebackq tokens=*" %%i IN (`%~dp0\future_time.bat 1200`) DO (	
-        set NEWTIME=%%i    
-    )
-    echo Will logout at !NEWTIME!
-    @REM    schtasks /create /ST !NEWTIME! /SC DAILY /tn session_cleanup_maxtime /tr "shutdown -l" 
-    @REM   /Z requires  /ED   enddate in dd/mm/yyyy
-    schtasks /create  /SC onevent /EC System /MO *[System/EventID=1000] /DELAY 1200:00 /tn session_cleanup_maxtime /tr "shutdown -l"  
+    @REM ---- THESE lines use future_time.bat which I have decided I dont need.
+    @REM FOR /F "usebackq tokens=*" %%i IN (`%~dp0\future_time.bat 120`) DO (	
+    @REM     set NEWTIME=%%i    
+    @REM )
+    @REM echo Will logout at !NEWTIME!
+    @REM schtasks /create /ST !NEWTIME! /SC DAILY /tn session_cleanup_maxtime /tr "shutdown -l" 
+    @REM  Could add auto remove task with /Z  but it requires  /ED   enddate in dd/mm/yyyy
+    @REM ---- Switched to two part game using onevent and delay. 
+    @REM   We schedule task to run after event, then we trigger straight away.
+    schtasks /create  /SC onevent /EC System /MO *[System/EventID=1000] /DELAY 120:00 /tn session_cleanup_maxtime /tr "shutdown -l"  
     @REM eventcreate  /Id eventid  /D eventDescription /T eventType /L eventLogfileName
     @REM Tried to be cool and use id 6009, which co-insides with usere initiated shutdown, but schtasks only responts to 1-1000
     eventcreate  /Id 1000  /D "Maximum appstream session length without a new program start count." /T information /L system
-
 )
 set is_sched=NO
 @REM echo Check anything is running
