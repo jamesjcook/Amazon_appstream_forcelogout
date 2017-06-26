@@ -6,6 +6,11 @@ SETLOCAL EnableDelayedExpansion
 TITLE session_cleanup
 set reg_dir=%USERPROFILE%\appreg
 set program=%1
+set delay=%2
+if [%2]==[] set delay=0
+
+call sleep_ping %delay%
+
 set interval=1
 
 set PATH=%PATH%;%~dp0
@@ -22,7 +27,7 @@ if NOT %program%==NOPROGRAM (
     
     call %~dp0\app_tattler %program% %reg_dir%
     echo Check anything is running
-    FOR /F "usebackq tokens=*" %%i IN (`%~dp0\is_scheduled.bat %program%_check`) DO (
+    FOR /F "usebackq tokens=*" %%i IN (`call %~dp0\is_scheduled.bat %program%_check`) DO (
         set is_sched=%%i
     )
     echo session_cleanup sched stat "!is_sched!"
@@ -34,7 +39,7 @@ if NOT %program%==NOPROGRAM (
         schtasks /create /sc MINUTE /tn %program%_check /tr  "%~dp0\bg_task.vbs %~dp0\app_tattler %program% %reg_dir%"
     )
     @REM Check for session max length timer
-    FOR /F "usebackq tokens=*" %%i IN (`%~dp0\is_scheduled.bat session_cleanup_maxtime`) DO (
+    FOR /F "usebackq tokens=*" %%i IN (`call %~dp0\is_scheduled.bat session_cleanup_maxtime`) DO (
         set is_sched=%%i
     )
     if !is_sched!==YES ( 
@@ -53,7 +58,7 @@ if NOT %program%==NOPROGRAM (
     @REM  Could add auto remove task with /Z  but it requires  /ED   enddate in dd/mm/yyyy
     @REM ---- Switched to two part game using onevent and delay. 
     @REM   We schedule task to run after event, then we trigger straight away.
-    schtasks /create  /SC onevent /EC System /MO *[System/EventID=1000] /DELAY 120:00 /tn session_cleanup_maxtime /tr "shutdown -l"  
+    schtasks /create  /SC onevent /EC System /MO *[System/EventID=1000] /DELAY 0120:00 /tn session_cleanup_maxtime /tr "shutdown -l"  
     @REM eventcreate  /Id eventid  /D eventDescription /T eventType /L eventLogfileName
     @REM Tried to be cool and use id 6009, which co-insides with usere initiated shutdown, but schtasks only responts to 1-1000
     eventcreate  /Id 1000  /D "Maximum appstream session length without a new program start count." /T information /L system
@@ -65,7 +70,7 @@ FOR /F "usebackq tokens=*" %%i IN (`dir_count %reg_dir%`) DO (
 )
 @REM Check if we're already scheduled. 
 @REM If we arnt, and things were running then schedule us.
-FOR /F "usebackq tokens=*" %%i IN (`%~dp0\is_scheduled.bat session_cleanup_check`) DO (
+FOR /F "usebackq tokens=*" %%i IN (`call %~dp0\is_scheduled.bat session_cleanup_check`) DO (
     set is_sched=%%i
 )
 
@@ -77,7 +82,9 @@ if !is_sched!==YES (
     if %dirCount% GTR 0 (
         schtasks /create /sc MINUTE /tn session_cleanup_check /tr "%~dp0\bg_task.vbs %~dp0\session_cleanup NOPROGRAM"
         @REM start /B /MIN /BELOWNORMAL %~dp0\app_tattler %program% %reg_dir% %interval%
-    )
+    ) else (
+	    echo Program not running, not scheduling
+	)
 @REM Schedule idle logout
     schtasks /create /sc ONIDLE /tn session_cleanup_idle /tr "shutdown -l" /i 3
     goto END
@@ -97,6 +104,6 @@ if %dirCount% EQU 0 (
 )
 
 :END
-start /min /belownormal sleep_ping 5 & exit /B 
-
+@REM start /min /belownormal sleep_ping 5 & exit /B 
+exit /b
 ENDLOCAL
