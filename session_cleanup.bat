@@ -85,8 +85,8 @@ if !is_sched!==YES (
     ) else (
 	    echo Program not running, not scheduling
 	)
-@REM Schedule idle logout
-    schtasks /create /sc ONIDLE /tn session_cleanup_idle /tr "shutdown -l" /i 3
+@REM Schedule idle logout Set terribly low(1 min) due to windows idle detect being so slow.
+    schtasks /create /sc ONIDLE /tn session_cleanup_idle /tr "shutdown -l" /i 1
     goto END
 ) 
 
@@ -105,5 +105,5 @@ if %dirCount% EQU 0 (
 
 :END
 @REM start /min /belownormal sleep_ping 5 & exit /B 
-exit /b
+exit 
 ENDLOCAL
