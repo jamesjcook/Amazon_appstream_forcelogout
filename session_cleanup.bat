@@ -7,8 +7,9 @@ TITLE session_cleanup
 set reg_dir=%USERPROFILE%\appreg
 set program=%1
 set delay=%2
+set var_file=c:\CIVM_apps\session_vars.txt
 if [%2]==[] set delay=0
-
+@REM if [%3]==[] set var_txt=NONE
 call sleep_ping %delay%
 
 set interval=1
@@ -24,8 +25,8 @@ if NOT %program%==NOPROGRAM (
     @REM echo app_tattler schedule setup
     @REM check if scheduler exists for program
     @REM Run the app_tattler once to initalize things
-    
     call %~dp0\app_tattler %program% %reg_dir%
+
     echo Check anything is running
     FOR /F "usebackq tokens=*" %%i IN (`call %~dp0\is_scheduled.bat %program%_check`) DO (
         set is_sched=%%i
@@ -64,6 +65,7 @@ if NOT %program%==NOPROGRAM (
     @REM Tried to be cool and use id 6009, which co-insides with usere initiated shutdown, but schtasks only responts to 1-1000
     @REM eventcreate  /Id 1000  /D "Maximum appstream session length without a new program start count." /T information /L system
 )
+
 set is_sched=NO
 @REM echo Check anything is running
 FOR /F "usebackq tokens=*" %%i IN (`dir_count %reg_dir%`) DO (
@@ -79,8 +81,10 @@ echo session_cleanup sched stat "!is_sched!"
 if !is_sched!==YES (
     echo found schedule
     goto CHECK
-) else ( 
+) else (
+@REM Not scheduled yet,  
     if %dirCount% GTR 0 (
+    @REM and there are registered programs. so schedule us.
         schtasks /create /sc MINUTE /tn session_cleanup_check /tr "%~dp0\bg_task.vbs %~dp0\session_cleanup NOPROGRAM"
         @REM start /B /MIN /BELOWNORMAL %~dp0\app_tattler %program% %reg_dir% %interval%
     ) else (
@@ -94,6 +98,10 @@ if !is_sched!==YES (
 
 
 :CHECK
+@REM session_var_gobbler will put the session vars in the environment each time its run.
+%~dp0\session_var_gobbler.bat %var_file%
+Powershell.exe -executionpolicy remotesigned -File %~dp0\ReportIdleTime.ps1 %FleetName% %StackName% %UserId%
+
 if %dirCount% EQU 0 (
     @REM trigger logout here
     echo Logging Off
