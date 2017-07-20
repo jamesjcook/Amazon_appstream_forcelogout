@@ -5,7 +5,11 @@ param (
     [string]$UserId = "beabrian"
  )
 
-
+<#
+Write-Host ("fleet:"+$FleetName)
+Write-Host ("stack:"+$StackName)
+Write-Host ("userid:"+$UserId)
+#>
 Get-AWSRegion #Needed to bring AWS CmdLets into Memory before touching the .Net Objects
 
 Add-Type @'
