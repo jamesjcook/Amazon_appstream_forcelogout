@@ -3,6 +3,7 @@ Code to force logout on program close in amazon appstream. Hopefully will soon b
 
 session_cleanup.bat  - the main, call this to set up the program watcher.
 usage session_cleanup program.exe  eg, sesion_cleanup notepad.exe
+the max time and the idle time shutdown events have been removed so they can be used from a more amazon friendly place. appstream max session time replaces the max time, and a cloudwatch alarm will replace the idle time. 
 
 app_tattler.bat - records if program is open or not. saves the time of last check to a file in a specified directory. 
 usage app_tattler.bat program.exe checking_directory

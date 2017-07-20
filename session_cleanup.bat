@@ -58,10 +58,11 @@ if NOT %program%==NOPROGRAM (
     @REM  Could add auto remove task with /Z  but it requires  /ED   enddate in dd/mm/yyyy
     @REM ---- Switched to two part game using onevent and delay. 
     @REM   We schedule task to run after event, then we trigger straight away.
-    schtasks /create  /SC onevent /EC System /MO *[System/EventID=1000] /DELAY 0120:00 /tn session_cleanup_maxtime /tr "shutdown -l"  
-    @REM eventcreate  /Id eventid  /D eventDescription /T eventType /L eventLogfileName
+    @REM Removing this as there is an appstream max time feature, which has now been turned on for our fleets.
+    @REM schtasks /create  /SC onevent /EC System /MO *[System/EventID=1000] /DELAY 0120:00 /tn session_cleanup_maxtime /tr "shutdown -s"  
+    @REM example: eventcreate  /Id eventid  /D eventDescription /T eventType /L eventLogfileName
     @REM Tried to be cool and use id 6009, which co-insides with usere initiated shutdown, but schtasks only responts to 1-1000
-    eventcreate  /Id 1000  /D "Maximum appstream session length without a new program start count." /T information /L system
+    @REM eventcreate  /Id 1000  /D "Maximum appstream session length without a new program start count." /T information /L system
 )
 set is_sched=NO
 @REM echo Check anything is running
@@ -85,8 +86,9 @@ if !is_sched!==YES (
     ) else (
 	    echo Program not running, not scheduling
 	)
-@REM Schedule idle logout Set terribly low(1 min) due to windows idle detect being so slow.
-    schtasks /create /sc ONIDLE /tn session_cleanup_idle /tr "shutdown -l" /i 1
+    @REM Schedule idle logout Set terribly low(1 min) due to windows idle detect being so slow.
+    @REM Disabled the idle shutdown in prep for using the cloudwach 
+    @REM schtasks /create /sc ONIDLE /tn session_cleanup_idle /tr "shutdown -s" /i 1
     goto END
 ) 
 
@@ -95,10 +97,10 @@ if !is_sched!==YES (
 if %dirCount% EQU 0 (
     @REM trigger logout here
     echo Logging Off
-    schtasks /F /delete /tn session_cleanup_idle > NUL 2>&1
+    @REM schtasks /F /delete /tn session_cleanup_idle > NUL 2>&1
     schtasks /F /delete /tn session_cleanup_check > NUL 2>&1
-    schtasks /F /delete /tn session_cleanup_maxtime > NUL 2>&1
-    shutdown -l
+    @REM schtasks /F /delete /tn session_cleanup_maxtime > NUL 2>&1
+    shutdown -s
 ) else (
     echo SessionProgramsStillActive 
 )
