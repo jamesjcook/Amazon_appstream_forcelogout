@@ -1,5 +1,5 @@
 @echo off
-setlocal enableDelayedExpansion
+setlocal enableDelayedExpansion 
 
 set "the_file=%1"
 @REM Example file contents
@@ -7,8 +7,8 @@ set "the_file=%1"
 @REM  ApplicationId=AtlasViewerLaunch20170626 FleetName=InteractivePublishing_prod2 StackName=InteractivePublishing_prod2 Validity=45 UserId=218 LibraryItem=V17001 LibraryId=19  ENDECHO  
 
 @REM read the file, looking for the keyline ending with "ENDECHO"
-for /F "delims=" %%a in ('findstr /I "ENDECHO" %the_file') do set "varLine=%%a"
-echo input is %varLine%
+for /F "delims=" %%a in ('findstr /I "ENDECHO" %the_file%') do set "varLine=%%a"
+@REM echo input is %varLine%
 
 @REM ::::::::::::::::::::::::::::::::::::::::::
 @REM Removes the endecho
