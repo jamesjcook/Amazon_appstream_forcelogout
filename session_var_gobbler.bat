@@ -27,6 +27,21 @@ set LF=^
 
 @REM The above 2 empty lines are critical - do not remove
 @REM Parse and set the values
+set "VARLIST="
 for %%A in ("!LF!") do (
-  for /f "eol== tokens=1,2 delims==" %%B in ("!tvarLine: =%%~A!") do set "%%B=%%C"
+  for /f "eol== tokens=1,2 delims==" %%B in ("!tvarLine: =%%~A!") do ( 
+    set "%%B=%%C"
+    @REM setx %%B %%C
+    @REM set "VARLIST=%%B !VARLIST!"
+  )
 )
+
+@REM echo "Varlist=%VARLIST%"
+@REM switched to setx to avoid all this mess.
+@REM Push variables out to main shell.
+@REM endlocal && set "VARLIST=%VARLIST%" && for %%a in (%VARLIST%) do ( set var=%%a set 
+@REM echo "%var% !var! !%var%!"
+@REM )
+
+@REM echo "end varlist=%VARLIST%"
+
