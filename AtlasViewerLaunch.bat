@@ -3,10 +3,10 @@ SETLOCAL ENABLEEXTENSIONS
 SETLOCAL EnableDelayedExpansion
 @REM AtlasViewerLaunch.bat
 @REM close existing sessions
-taskkill /im AtlasViewerApp-real.exe > NUL 2>&1
+taskkill /f /im AtlasViewerApp-real.exe > NUL 2>&1
 start %~dp0\session_cleanup.bat atlasviewer.exe 8
 set filepath=%~p1
 cd %filepath%
-
+echo %* > c:\CIVM_Apps\AppLaunch.txt
 start /wait %*
 exit \b
