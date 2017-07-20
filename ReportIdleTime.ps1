@@ -2,7 +2,7 @@
 param (
     [string]$FleetName = "MyFleet",
     [string]$StackName = "MyStack",
-    [switch]$UserID = "beabrian"
+    [string]$UserId = "beabrian"
  )
 
 
