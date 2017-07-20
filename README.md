@@ -16,6 +16,7 @@ is_running - echos yes or no if the specified program.exe is currently running.
 timestamp.bat - echos current time accurate to the minute.
 sleep_ping.bat - function to delay, accurate to seconds.
 
+ReportIdleTime.ps1 - Generously provided by amazon engineers, this will publish the current idle time to cloud watch. Their version published on interval, it has been converted to publish just once, and windows shceduler is used to run it again every minute.
 
 Overview of operation,use session_cleanup program.exe to get things operational. 
 
