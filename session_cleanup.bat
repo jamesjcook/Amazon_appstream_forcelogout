@@ -99,9 +99,10 @@ if !is_sched!==YES (
 
 :CHECK
 @REM session_var_gobbler will put the session vars in the environment each time its run.
+%~dp0\session_var_gobbler.bat c:\Applications\ask.xt
 %~dp0\session_var_gobbler.bat %var_file%
 set script=%~dp0\ReportIdleTime.ps1
-Powershell -NoProfile -ExecutionPolicy Bypass -Command "& %script% -FleetName %FleetName% -StackName %StackName% -UserId %UserId%"
+Powershell -NoProfile -ExecutionPolicy Bypass -Command "& %script% -FleetName %FleetName% -StackName %StackName% -UserId %UserId% -AccessKey %AccessKey% -SecretKey %SecretKey%"
 
 if %dirCount% EQU 0 (
     @REM trigger logout here
