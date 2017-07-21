@@ -3,6 +3,8 @@ param (
     [string]$FleetName = "MyFleet",
     [string]$StackName = "MyStack",
     [string]$UserId = "beabrian"
+    [string]$AccessKey = "NUKEY",
+    [string]$SecretKey = "NUKEY",
  )
 
 <#
@@ -76,7 +78,11 @@ namespace PInvoke.Win32 {
     $dat.Unit = "None"
     $dat.Value = [PInvoke.Win32.UserInput]::IdleTime.TotalSeconds
 
-    Write-CWMetricData -Namespace "Usage Metrics" -MetricData $dat
+
+    # example with key    Write-CWMetricData -AccessKey $AccessKey -SecretKey $SecretKey -Namespace "Usage Metrics" -MetricData $dat
+
+    Write-CWMetricData -AccessKey $AccessKey -SecretKey $SecretKey -Namespace "Usage Metrics" -MetricData $dat
+    
     Write-Host ("Last input " + [PInvoke.Win32.UserInput]::LastInput)
     Write-Host ("Idle for " + [PInvoke.Win32.UserInput]::IdleTime)
     Write-Host ("Idle for " + [PInvoke.Win32.UserInput]::IdleTime.TotalSeconds)
