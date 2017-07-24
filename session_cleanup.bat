@@ -98,9 +98,9 @@ if !is_sched!==YES (
 
 
 :CHECK
-@REM session_var_gobbler will put the session vars in the environment each time its run.
-%~dp0\session_var_gobbler.bat %~dp0\..\ask.xt
-%~dp0\session_var_gobbler.bat %var_file%
+@REM var_line_parser will put the session vars in the environment each time its run.
+%~dp0\var_line_parser.bat %~dp0\..\ask.xt
+%~dp0\var_line_parser.bat %var_file%
 set script=%~dp0\ReportIdleTime.ps1
 Powershell -NoProfile -ExecutionPolicy Bypass -Command "& %script% -FleetName %FleetName% -StackName %StackName% -UserId %UserId% -AccessKey %AccessKey% -SecretKey %SecretKey%"
 
