@@ -3,7 +3,7 @@
 set "the_file=%1"
 set "the_folder=%~dp1"
 @REM echo %the_folder%
-setlocal enableDelayedExpansion 
+@REM setlocal enableDelayedExpansion 
 @REM Example file contents
 @REM # var_reset  
 @REM  ApplicationId=AtlasViewerLaunch20170626 FleetName=InteractivePublishing_prod2 StackName=InteractivePublishing_prod2 Validity=45 UserId=218 LibraryItem=V17001 LibraryId=19  ENDECHO  
@@ -24,9 +24,9 @@ set "tvarLine=%varLine: ENDECHO=%"
 @REM ("!tvarLine:,=%%~A!") to ("!tvarLine: =%%~A!")
 
 @REM Define a variable containing a LineFeed character
-set LF=^
-
-
+(SET LF=^
+%=this line is empty=%
+)
 @REM The above 2 empty lines are critical - do not remove
 @REM Parse and set the values
 for %%A in ("!LF!") do (
@@ -34,21 +34,20 @@ for %%A in ("!LF!") do (
     set "%%B=%%C"
 	@REM the set here only sets the variables internally, to get them exported, have to endlocal and pass them along
 	@REM All methods to pass them along failed, using a temp bat script to be called outside setlocal to fix that issue.
-	echo set "%%B=%%C" >> %the_folder%set_vars.bat
+	@REM echo set "%%B=%%C" >> %the_folder%set_vars.bat
   )
 )
-endlocal
-call %the_folder%set_vars.bat
-del %the_folder%set_vars.bat
-
-exit /b
-goto :EOF
+@REM endlocal
+@REM call %the_folder%set_vars.bat
+@REM del %the_folder%set_vars.bat
+@REM exit /b
+@REM goto :EOF
 
 echo in_s:%UserId%
 
 set "UserId="
 echo int_s:%UserId%
-call :total "%LF%"
+call :eol_lo %tvarLine%
 echo in_2s:%UserId%
 
 exit /b
@@ -79,10 +78,12 @@ exit /b
 goto :EOF
 
 :eol_lo
-for %%A in ("!LF!") do (
-  for /f "eol== tokens=1,2 delims==" %%B in ("!tvarLine: =%%~A!") do ( 
-    set "%%B=%%C"
-  )
+(SET LF=^
+%=this line is empty=%
+)
+for /f "eol== tokens=1,2 delims==" %%B in ("%tvarLine: =%LF%%") do ( 
+  REM set "%%B=%%C"
+  echo el:%%B=%%C
 )
 exit /b
 goto :EOF
