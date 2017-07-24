@@ -1,7 +1,9 @@
 @echo off
-setlocal enableDelayedExpansion 
 
 set "the_file=%1"
+set "the_folder=%~dp1"
+@REM echo %the_folder%
+setlocal enableDelayedExpansion 
 @REM Example file contents
 @REM # var_reset  
 @REM  ApplicationId=AtlasViewerLaunch20170626 FleetName=InteractivePublishing_prod2 StackName=InteractivePublishing_prod2 Validity=45 UserId=218 LibraryItem=V17001 LibraryId=19  ENDECHO  
@@ -27,21 +29,60 @@ set LF=^
 
 @REM The above 2 empty lines are critical - do not remove
 @REM Parse and set the values
-set "VARLIST="
 for %%A in ("!LF!") do (
   for /f "eol== tokens=1,2 delims==" %%B in ("!tvarLine: =%%~A!") do ( 
     set "%%B=%%C"
-    @REM setx %%B %%C
-    @REM set "VARLIST=%%B !VARLIST!"
+	@REM the set here only sets the variables internally, to get them exported, have to endlocal and pass them along
+	@REM All methods to pass them along failed, using a temp bat script to be called outside setlocal to fix that issue.
+	echo set "%%B=%%C" >> %the_folder%set_vars.bat
   )
 )
+endlocal
+call %the_folder%set_vars.bat
+del %the_folder%set_vars.bat
 
-@REM echo "Varlist=%VARLIST%"
-@REM switched to setx to avoid all this mess.
-@REM Push variables out to main shell.
-@REM endlocal && set "VARLIST=%VARLIST%" && for %%a in (%VARLIST%) do ( set var=%%a set 
-@REM echo "%var% !var! !%var%!"
-@REM )
+exit /b
+goto :EOF
 
-@REM echo "end varlist=%VARLIST%"
+echo in_s:%UserId%
 
+set "UserId="
+echo int_s:%UserId%
+call :total "%LF%"
+echo in_2s:%UserId%
+
+exit /b
+goto :EOF
+
+:total
+echo in tot
+echo arg 1 is "%1"
+echo arg 2 is "%2"
+echo arg all is "%*"
+set "LF=%*"
+@REM Parse and set the values
+for %%A in ("!LF!") do (
+  for /f "eol== tokens=1,2 delims==" %%B in ("!tvarLine: =%%~A!") do ( 
+    set "%%B=%%C"
+	)
+)
+exit /b
+goto :EOF
+
+:lf_lo
+for %%A in ("!LF!") do (
+  for /f "eol== tokens=1,2 delims==" %%B in ("!tvarLine: =%%~A!") do ( 
+    set "%%B=%%C"
+  )
+)
+exit /b
+goto :EOF
+
+:eol_lo
+for %%A in ("!LF!") do (
+  for /f "eol== tokens=1,2 delims==" %%B in ("!tvarLine: =%%~A!") do ( 
+    set "%%B=%%C"
+  )
+)
+exit /b
+goto :EOF
