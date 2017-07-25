@@ -2,9 +2,9 @@
 param (
     [string]$FleetName = "MyFleet",
     [string]$StackName = "MyStack",
-    [string]$UserId = "beabrian"
+    [string]$UserId = "beabrian",
     [string]$AccessKey = "NUKEY",
-    [string]$SecretKey = "NUKEY",
+    [string]$SecretKey = "NUKEY"
  )
 
 <#
