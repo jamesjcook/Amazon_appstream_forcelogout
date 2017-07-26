@@ -89,25 +89,25 @@ if !is_sched!==YES (
         @REM start /B /MIN /BELOWNORMAL %~dp0\app_tattler %program% %reg_dir% %interval%
     ) else (
 	    echo Program not running, not scheduling
-	)
+    )
     @REM Schedule idle logout Set terribly low(1 min) due to windows idle detect being so slow.
     @REM Disabled the idle shutdown in prep for using the cloudwach 
-    @REM schtasks /create /sc ONIDLE /tn session_cleanup_idle /tr "shutdown -s" /i 1
+    @REM schtasks /create /sc ONIDLE /tn session_cleanup_idle /tr "shutdown -s" /i 5
     goto END
 ) 
 
 
 :CHECK
 @REM var_line_parser will put the session vars in the environment each time its run.
-%~dp0\var_line_parser.bat %~dp0\..\ask.xt
+%~dp0\var_line_parser.bat %~dp0\..\ask.txt
 %~dp0\var_line_parser.bat %var_file%
 set script=%~dp0\ReportIdleTime.ps1
-%~dp0\bg_task.vbs Powershell -NoProfile -ExecutionPolicy Bypass -Command "& %script% -FleetName %FleetName% -StackName %StackName% -UserId %UserId% -AccessKey %AccessKey% -SecretKey %SecretKey%"
+Powershell -NoProfile -ExecutionPolicy Bypass -Command "& %script% -FleetName %FleetName% -StackName %StackName% -UserId %UserId% -AccessKey %AccessKey% -SecretKey %SecretKey%"
 
 if %dirCount% EQU 0 (
     @REM trigger logout here
     echo Logging Off
-    @REM schtasks /F /delete /tn session_cleanup_idle > NUL 2>&1
+    schtasks /F /delete /tn session_cleanup_idle > NUL 2>&1
     schtasks /F /delete /tn session_cleanup_check > NUL 2>&1
     @REM schtasks /F /delete /tn session_cleanup_maxtime > NUL 2>&1
     shutdown -s
