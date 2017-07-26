@@ -99,8 +99,8 @@ if !is_sched!==YES (
 
 :CHECK
 @REM var_line_parser will put the session vars in the environment each time its run.
-%~dp0\var_line_parser.bat %~dp0\..\ask.txt
-%~dp0\var_line_parser.bat %var_file%
+call %~dp0\var_line_parser.bat %~dp0\..\ask.txt
+call %~dp0\var_line_parser.bat %var_file%
 set script=%~dp0\ReportIdleTime.ps1
 Powershell -NoProfile -ExecutionPolicy Bypass -Command "& %script% -FleetName %FleetName% -StackName %StackName% -UserId %UserId% -AccessKey %AccessKey% -SecretKey %SecretKey%"
 
