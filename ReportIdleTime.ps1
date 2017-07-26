@@ -7,12 +7,15 @@ param (
     [string]$SecretKey = "NUKEY"
  )
 
-<#
-Write-Host ("fleet:"+$FleetName)
-Write-Host ("stack:"+$StackName)
-Write-Host ("userid:"+$UserId)
+#<#
+Write-Host ("FleetName:"+$FleetName)
+Write-Host ("StackName:"+$StackName)
+Write-Host ("UserId :"+$UserId)
+Write-Host ("AccessKey :"+$AccessKey )
+Write-Host ("SecretKey :"+$SecretKey )
 #>
 Get-AWSRegion #Needed to bring AWS CmdLets into Memory before touching the .Net Objects
+Write-Host ("Ready!")
 
 Add-Type @'
 using System;
@@ -78,14 +81,14 @@ namespace PInvoke.Win32 {
     $dat.Unit = "None"
     $dat.Value = [PInvoke.Win32.UserInput]::IdleTime.TotalSeconds
 
+    Write-Host ("Last input " + [PInvoke.Win32.UserInput]::LastInput)
+    Write-Host ("Idle for " + [PInvoke.Win32.UserInput]::IdleTime)
+    Write-Host ("Idle for " + [PInvoke.Win32.UserInput]::IdleTime.TotalSeconds)
 
     # example with key    Write-CWMetricData -AccessKey $AccessKey -SecretKey $SecretKey -Namespace "Usage Metrics" -MetricData $dat
 
     Write-CWMetricData -AccessKey $AccessKey -SecretKey $SecretKey -Namespace "Usage Metrics" -MetricData $dat
-    
-    Write-Host ("Last input " + [PInvoke.Win32.UserInput]::LastInput)
-    Write-Host ("Idle for " + [PInvoke.Win32.UserInput]::IdleTime)
-    Write-Host ("Idle for " + [PInvoke.Win32.UserInput]::IdleTime.TotalSeconds)
+    Write-Host ("Metric Written")
 <#    Start-Sleep -Seconds 60
 } #>
 
