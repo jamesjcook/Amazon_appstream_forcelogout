@@ -12,7 +12,7 @@ start %~dp0\session_cleanup.bat atlasviewer.exe 8
 
 set filepath=%~p1
 cd %filepath%
-echo %* >> c:\CIVM_Apps\AtlasViewerLaunch.txt
-echo %* > c:\CIVM_Apps\AppLaunch.txt
+echo %* >> c:\CIVM_Apps\AtlasViewerLaunchLog.txt
+echo %* > c:\CIVM_Apps\AtlasViewerLaunch.txt
 start /wait %*
 exit \b
