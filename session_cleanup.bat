@@ -10,11 +10,12 @@ set delay=%2
 set var_file=c:\CIVM_apps\session_vars.txt
 if [%2]==[] set delay=0
 @REM if [%3]==[] set var_txt=NONE
+set PATH=%PATH%;%~dp0
+
 call sleep_ping %delay%
 
 set interval=1
 
-set PATH=%PATH%;%~dp0
 if not exist %reg_dir% (
     mkdir %reg_dir%
 )
