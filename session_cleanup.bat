@@ -7,7 +7,7 @@ TITLE session_cleanup
 set reg_dir=%USERPROFILE%\appreg
 set program=%1
 set delay=%2
-set var_file=c:\CIVM_apps\session_vars.txt
+set var_file=c:\IP\session_vars.txt
 if [%2]==[] set delay=0
 @REM if [%3]==[] set var_txt=NONE
 set PATH=%PATH%;%~dp0

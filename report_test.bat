@@ -2,7 +2,7 @@
 @set FleetName=IB201706 
 @set StackName=IB201706 
 @set UserId=218
-set script=c:\CIVM_Apps\Amazon_appstream_forcelogout\ReportIdleTime.ps1
+set script=c:\IP\Amazon_appstream_forcelogout\ReportIdleTime.ps1
 call var_line_parser ..\ask.txt
 @REM start_type can be a empty space, call , or bg_task.vbs They all seem to work.
 @REM bg_task wont show any output.
