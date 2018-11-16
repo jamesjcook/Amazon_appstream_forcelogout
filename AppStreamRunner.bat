@@ -2,7 +2,7 @@
 SETLOCAL ENABLEEXTENSIONS
 SETLOCAL EnableDelayedExpansion
 echo Getting Session Context
-timout 2
+timeout 2
 echo ...
 echo ...
 c:\IP\SessionContextRetriever.exe
