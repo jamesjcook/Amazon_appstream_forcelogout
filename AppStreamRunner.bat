@@ -1,7 +1,12 @@
 @echo off
 SETLOCAL ENABLEEXTENSIONS
 SETLOCAL EnableDelayedExpansion
-
+echo Getting Session Context
+timout 2
+echo ...
+echo ...
+c:\IP\SessionContextRetriever.exe
+timeout 30
 for /f "tokens=* USEBACKQ" %%f in (`c:\IP\SessionContextRetriever.exe`) do (
 set var=%%f
 )
