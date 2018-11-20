@@ -1,14 +1,15 @@
+@echo on
+@SETLOCAL ENABLEEXTENSIONS
+@SETLOCAL EnableDelayedExpansion
+
+@call timestamp >> c:\IP\sesh.txt
+@c:\IP\SessionContextRetriever.exe >> c:\IP\sesh.txt
+
 @echo off
-SETLOCAL ENABLEEXTENSIONS
-SETLOCAL EnableDelayedExpansion
-echo Getting Session Context
-timeout 2
-echo ...
-echo ...
-c:\IP\SessionContextRetriever.exe
-timeout 30
+@REM added quotes around var set to better protect it, however that may not be our problem at all!
+@REM Could have been that we accidentially had code in our launch params and WE NEED IT TO BE EMPTY.
 for /f "tokens=* USEBACKQ" %%f in (`c:\IP\SessionContextRetriever.exe`) do (
-set var=%%f
+set "var=%%f"
 )
 %var%
 
