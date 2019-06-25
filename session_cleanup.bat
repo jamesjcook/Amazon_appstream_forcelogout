@@ -58,7 +58,7 @@ if NOT %program%==NOPROGRAM (
     @REM echo Will logout at !NEWTIME!
     @REM schtasks /create /ST !NEWTIME! /SC DAILY /tn session_cleanup_maxtime /tr "shutdown -l" 
     @REM  Could add auto remove task with /Z  but it requires  /ED   enddate in dd/mm/yyyy
-    @REM ---- Switched to two part game using onevent and delay. 
+    @REM ---- Switched to two part game using event and delay. 
     @REM   We schedule task to run after event, then we trigger straight away.
     @REM Removing this as there is an appstream max time feature, which has now been turned on for our fleets.
     @REM schtasks /create  /SC onevent /EC System /MO *[System/EventID=1000] /DELAY 0120:00 /tn session_cleanup_maxtime /tr "shutdown -s"  
