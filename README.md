@@ -6,10 +6,14 @@ Initially developed to force logout on program close in amazon appstream. Hopefu
 utility code moved to windows_batch_utils, those are app_tattler.bat, bg_task.vbs, dir_count.bat, fileparts.bat, is_running.bat is_scheduled.bat sleep_pint.bat, timestamp.bat, var_line_parser.bat
 see external deff.
 
+Dont forget to initalize 
+  * git submodule update --init --recursive
+
+
 AppStreamRunner.bat - Assuming you've downloaded the sessioncontextretriever.exe from aws. It will run the session context as a program. It has proven robust to any ludicrous string of windows cmd syntax you want to throw at it. We use it by passing a string of echo commands to set up a minimal start script for our application. We also pass stack/fleet/user details and use echo to dump them to a file.
 
-AppStreamRunner.bat is the only published application, it is configured with no arguments by default.
 
+AppStreamRunner.bat is the only published application, it is configured with no arguments by default.
 
 
 AtlasViewerLaunch.bat - Application specific session_cleanup run. Can be used as a template for your special purpose. Ours included only one running copy of a specific program, which must be open in the session. Theoritically this script is not needed and AppStreamRunner could do it all with session context. However with a char limit of 1024 on session context, it would be easy to overflow.
