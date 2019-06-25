@@ -3,6 +3,9 @@ Code to grease the wheels of appstream deployment.
 Written in lowest common denominator language.(windows batch files, vbs and powershell)
 Initially developed to force logout on program close in amazon appstream. Hopefully will soon be obsolete.
 
+utility code moved to windows_batch_utils, those are app_tattler.bat, bg_task.vbs, dir_count.bat, fileparts.bat, is_running.bat is_scheduled.bat sleep_pint.bat, timestamp.bat, var_line_parser.bat
+see external deff.
+
 AppStreamRunner.bat - Assuming you've downloaded the sessioncontextretriever.exe from aws. It will run the session context as a program. It has proven robust to any ludicrous string of windows cmd syntax you want to throw at it. We use it by passing a string of echo commands to set up a minimal start script for our application. We also pass stack/fleet/user details and use echo to dump them to a file.
 
 AppStreamRunner.bat is the only published application, it is configured with no arguments by default.
@@ -17,21 +20,6 @@ the max time and the idle time shutdown events have been removed so they can be 
 
 as_idlecheck.py - amazon cloudwatch python script. Granted from generious amazon engineer, lightly modified to make general. This is used in cloudwatch to read the UserIdleTime reported from ReportIdleTime.ps1 in the appstream session. Its included here to keep the different parts together. 
 
-app_tattler.bat - records if program is open or not. saves the time of last check to a file in a specified directory. 
-usage app_tattler.bat program.exe checking_directory
-
-bg_task.vbs -  it uses vbs to run some command line headless. Only tested with .bat files.
-usage bg_task.vbs program arg1 arg2 arg3
-
-dir_count.bat - echos the count of items in a specified directory.
-
-is_scheduled.bat - echos yes or no if the specified taskname is scheduled in the root of scheduled tasks
-
-is_running - echos yes or no if the specified program.exe is currently running.
-
-timestamp.bat - echos current time accurate to the minute.
-
-sleep_ping.bat - function to delay, accurate to seconds.
 
 ReportIdleTime.ps1 - Generously provided by amazon engineers, this will publish the current idle time to cloud watch. Their version published on interval, it has been converted to publish just once, and windows scheduler is used to run it again every minute.
 
