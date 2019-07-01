@@ -10,8 +10,9 @@ set delay=%2
 set var_file=c:\IP\session_vars.txt
 if [%2]==[] set delay=0
 @REM if [%3]==[] set var_txt=NONE
-set PATH=%PATH%;%~dp0
+set PATH=%PATH%;%~dp0;%~dp0utils
 
+set "utildir=%~dp0utils"
 call sleep_ping %delay%
 
 set interval=1
@@ -26,10 +27,10 @@ if NOT %program%==NOPROGRAM (
     @REM echo app_tattler schedule setup
     @REM check if scheduler exists for program
     @REM Run the app_tattler once to initalize things
-    call %~dp0\app_tattler %program% %reg_dir%
+    call %utildir%\app_tattler %program% %reg_dir%
 
     echo Check anything is running
-    FOR /F "usebackq tokens=*" %%i IN (`call %~dp0\is_scheduled.bat %program%_check`) DO (
+    FOR /F "usebackq tokens=*" %%i IN (`call %utildir%\is_scheduled.bat %program%_check`) DO (
         set is_sched=%%i
     )
     echo session_cleanup sched stat "!is_sched!"
@@ -38,10 +39,10 @@ if NOT %program%==NOPROGRAM (
     if !is_sched!==YES ( 
         echo %program% appcheck schedule found 
     ) else (
-        schtasks /create /sc MINUTE /tn %program%_check /tr  "%~dp0\bg_task.vbs %~dp0\app_tattler %program% %reg_dir%"
+        schtasks /create /sc MINUTE /tn %program%_check /tr  "%utildir%\bg_task.vbs %utildir%\app_tattler %program% %reg_dir%"
     )
     @REM Check for session max length timer
-    FOR /F "usebackq tokens=*" %%i IN (`call %~dp0\is_scheduled.bat session_cleanup_maxtime`) DO (
+    FOR /F "usebackq tokens=*" %%i IN (`call %utildir%\is_scheduled.bat session_cleanup_maxtime`) DO (
         set is_sched=%%i
     )
     if !is_sched!==YES ( 
@@ -52,7 +53,7 @@ if NOT %program%==NOPROGRAM (
     @REM WARNING: THIS IS WHERE WE SCHEUDLE HARD SESSION LIMIT OF 120 MINUTES
     @REM :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     @REM ---- THESE lines use future_time.bat which I have decided I dont need.
-    @REM FOR /F "usebackq tokens=*" %%i IN (`%~dp0\future_time.bat 120`) DO (	
+    @REM FOR /F "usebackq tokens=*" %%i IN (`%utildir%\future_time.bat 120`) DO (	
     @REM     set NEWTIME=%%i    
     @REM )
     @REM echo Will logout at !NEWTIME!
@@ -74,7 +75,7 @@ FOR /F "usebackq tokens=*" %%i IN (`dir_count %reg_dir%`) DO (
 )
 @REM Check if we're already scheduled. 
 @REM If we arnt, and things were running then schedule us.
-FOR /F "usebackq tokens=*" %%i IN (`call %~dp0\is_scheduled.bat session_cleanup_check`) DO (
+FOR /F "usebackq tokens=*" %%i IN (`call %utildir%\is_scheduled.bat session_cleanup_check`) DO (
     set is_sched=%%i
 )
 
@@ -86,8 +87,8 @@ if !is_sched!==YES (
 @REM Not scheduled yet,  
     if %dirCount% GTR 0 (
     @REM and there are registered programs. so schedule us.
-        schtasks /create /sc MINUTE /tn session_cleanup_check /tr "%~dp0\bg_task.vbs %~dp0\session_cleanup NOPROGRAM"
-        @REM start /B /MIN /BELOWNORMAL %~dp0\app_tattler %program% %reg_dir% %interval%
+        schtasks /create /sc MINUTE /tn session_cleanup_check /tr "%utildir%\bg_task.vbs %~dp0\session_cleanup NOPROGRAM"
+        @REM start /B /MIN /BELOWNORMAL %utildir%\app_tattler %program% %reg_dir% %interval%
     ) else (
 	    echo Program not running, not scheduling
     )
@@ -100,8 +101,8 @@ if !is_sched!==YES (
 
 :CHECK
 @REM var_line_parser will put the session vars in the environment each time its run.
-call %~dp0\var_line_parser.bat %~dp0\..\ask.txt
-call %~dp0\var_line_parser.bat %var_file%
+call %utildir%\var_line_parser.bat %~dp0\..\ask.txt
+call %utildir%\var_line_parser.bat %var_file%
 set script=%~dp0\ReportIdleTime.ps1
 Powershell -NoProfile -ExecutionPolicy Bypass -Command "& %script% -FleetName %FleetName% -StackName %StackName% -UserId %UserId% -AccessKey %AccessKey% -SecretKey %SecretKey%"
 
